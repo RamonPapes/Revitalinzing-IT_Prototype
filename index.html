@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R-IT — Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 w-80 pointer-events-none"></div>
+
+  <div class="min-h-screen flex">
+
+    <!-- ── Painel esquerdo ── -->
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-green-900 flex-col justify-between p-12">
+      <div>
+        <div class="flex items-center gap-3 mb-12">
+          <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-recycle text-white text-xl"></i>
+          </div>
+          <span class="text-white text-2xl font-bold tracking-tight">R-IT</span>
+          <span class="text-green-400 text-sm font-medium ml-1">Revitalizing-it</span>
+        </div>
+        <h1 class="text-4xl font-bold text-white leading-snug mb-4">
+          Transforme resíduos em<br>
+          <span class="text-green-400">ativos econômicos</span>
+        </h1>
+        <p class="text-slate-300 text-base leading-relaxed max-w-md">
+          Marketplace B2B para economia circular. Conecte sua empresa a compradores de
+          matéria-prima sustentável e gere relatórios ESG automaticamente.
+        </p>
+      </div>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="bg-white/10 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-green-300">2.400+</div>
+          <div class="text-xs text-slate-300 mt-1">Empresas ativas</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-green-300">18k ton</div>
+          <div class="text-xs text-slate-300 mt-1">Resíduos negociados</div>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-green-300">4,2k tCO₂</div>
+          <div class="text-xs text-slate-300 mt-1">Emissões evitadas</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Painel direito ── -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-6">
+      <div class="w-full max-w-md">
+
+        <!-- Logo mobile -->
+        <div class="flex items-center justify-center gap-2 mb-8 lg:hidden">
+          <div class="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center">
+            <i class="fa-solid fa-recycle text-white"></i>
+          </div>
+          <span class="text-slate-900 text-xl font-bold">R-IT</span>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex bg-slate-200 rounded-xl p-1 mb-8">
+          <button id="tab-login"    onclick="switchTab('login')"    class="tab-btn flex-1 py-2 rounded-lg text-sm font-semibold bg-white shadow text-slate-900 transition-all">Entrar</button>
+          <button id="tab-register" onclick="switchTab('register')" class="tab-btn flex-1 py-2 rounded-lg text-sm font-semibold text-slate-500 transition-all">Cadastrar Empresa</button>
+        </div>
+
+        <!-- ── Formulário Login ── -->
+        <form id="form-login" onsubmit="handleLogin(event)">
+          <div class="mb-5">
+            <label class="form-label">E-mail corporativo</label>
+            <input id="login-email" type="email" placeholder="email@empresa.com.br" class="form-input" required />
+          </div>
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="form-label mb-0">Senha</label>
+              <a href="#" class="text-xs text-green-600 hover:underline font-medium">Esqueci minha senha</a>
+            </div>
+            <div class="relative">
+              <input id="login-password" type="password" placeholder="••••••••" class="form-input pr-10" required />
+              <button type="button" onclick="togglePass('login-password')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <i class="fa-regular fa-eye text-sm"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="login-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span>Credenciais inválidas. Use <strong>admin@techcorp.com</strong> / <strong>123456</strong></span>
+          </div>
+
+          <button type="submit" class="btn-primary w-full py-3">
+            <i class="fa-solid fa-right-to-bracket mr-2"></i>Acessar Plataforma
+          </button>
+          <p class="text-center text-xs text-slate-400 mt-4">
+            Demo: <span class="font-semibold text-slate-600">admin@techcorp.com</span> / <span class="font-semibold text-slate-600">123456</span>
+          </p>
+        </form>
+
+        <!-- ── Formulário Cadastro ── -->
+        <form id="form-register" class="hidden" onsubmit="handleRegister(event)">
+          <div class="grid grid-cols-2 gap-4 mb-5">
+            <div class="col-span-2">
+              <label class="form-label">Razão Social *</label>
+              <input id="reg-name" type="text" placeholder="Nome da Empresa S.A." class="form-input" required />
+            </div>
+            <div>
+              <label class="form-label">CNPJ *</label>
+              <input id="reg-cnpj" type="text" placeholder="00.000.000/0000-00" class="form-input" oninput="maskCNPJ(this)" maxlength="18" required />
+              <p id="cnpj-error" class="error-msg">CNPJ inválido.</p>
+            </div>
+            <div>
+              <label class="form-label">Segmento *</label>
+              <select id="reg-segment" class="form-input" required>
+                <option value="">Selecione...</option>
+                <option>Indústria Geradora</option>
+                <option>Empresa de Reciclagem</option>
+                <option>Transportadora</option>
+                <option>Gestão ESG</option>
+              </select>
+            </div>
+            <div class="col-span-2">
+              <label class="form-label">E-mail corporativo *</label>
+              <input id="reg-email" type="email" placeholder="email@empresa.com.br" class="form-input" required />
+            </div>
+            <div>
+              <label class="form-label">Senha *</label>
+              <input id="reg-pass"  type="password" placeholder="Mín. 8 caracteres" class="form-input" required minlength="8" />
+            </div>
+            <div>
+              <label class="form-label">Confirmar Senha *</label>
+              <input id="reg-pass2" type="password" placeholder="Repita a senha" class="form-input" required />
+            </div>
+          </div>
+          <div class="flex items-start gap-2 mb-5">
+            <input type="checkbox" id="reg-terms" class="mt-0.5 accent-green-600" required />
+            <label for="reg-terms" class="text-xs text-slate-500">
+              Concordo com os <a href="#" class="text-green-600 hover:underline">Termos de Uso</a> e
+              <a href="#" class="text-green-600 hover:underline">Política de Privacidade</a>.
+            </label>
+          </div>
+          <button type="submit" class="btn-primary w-full py-3">
+            <i class="fa-solid fa-building-circle-check mr-2"></i>Cadastrar Empresa
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/data.js"></script>
+  <script src="./js/shared.js"></script>
+  <script src="./js/login.js"></script>
+</body>
+</html>

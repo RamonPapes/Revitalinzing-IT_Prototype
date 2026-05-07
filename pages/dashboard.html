@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R-IT — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 w-80 pointer-events-none"></div>
+
+  <div class="flex min-h-screen">
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col lg:ml-64">
+      <div id="header-container"></div>
+
+      <main class="flex-1 p-5 lg:p-7">
+
+        <!-- Cards de resumo -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="card flex items-center gap-4">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-boxes-stacked text-green-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-slate-500 text-xs font-medium">Resíduos Cadastrados</p>
+              <p class="text-2xl font-bold text-slate-800">24</p>
+              <p class="text-green-600 text-xs font-semibold mt-0.5">↑ +3 este mês</p>
+            </div>
+          </div>
+          <div class="card flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-link text-blue-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-slate-500 text-xs font-medium">Matches Encontrados</p>
+              <p class="text-2xl font-bold text-slate-800">7</p>
+              <p class="text-blue-600 text-xs font-semibold mt-0.5">2 aguardando ação</p>
+            </div>
+          </div>
+          <div class="card flex items-center gap-4">
+            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-cloud text-green-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-slate-500 text-xs font-medium">CO₂ Evitado</p>
+              <p class="text-2xl font-bold text-slate-800">1,2k</p>
+              <p class="text-green-600 text-xs font-semibold mt-0.5">toneladas (2024)</p>
+            </div>
+          </div>
+          <div class="card flex items-center gap-4">
+            <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-dollar-sign text-yellow-600 text-xl"></i>
+            </div>
+            <div>
+              <p class="text-slate-500 text-xs font-medium">Receita Gerada</p>
+              <p class="text-2xl font-bold text-slate-800">R$48k</p>
+              <p class="text-yellow-600 text-xs font-semibold mt-0.5">↑ +12% vs anterior</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banner ESG -->
+        <div class="bg-gradient-to-r from-slate-900 to-green-900 rounded-xl p-5 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p class="text-green-300 text-xs font-semibold uppercase tracking-widest mb-1">Score ESG</p>
+            <h3 class="text-white text-xl font-bold">
+              Sua empresa atingiu nível <span class="text-green-300">A+</span> em sustentabilidade
+            </h3>
+            <p class="text-slate-300 text-sm mt-1">Baseado nas trocas realizadas e CO₂ evitado neste trimestre.</p>
+          </div>
+          <button
+            onclick="showToast('Exportação de relatório em desenvolvimento.','info')"
+            class="btn-outline text-green-300 border-green-400 hover:bg-white/10 flex-shrink-0 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-file-arrow-down"></i>Exportar Relatório
+          </button>
+        </div>
+
+        <!-- Tabela de movimentações de estoque -->
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-base font-bold text-slate-800">Últimas Movimentações de Estoque</h2>
+            <a href="./stock.html" class="text-green-600 text-sm font-semibold hover:underline">
+              Ver estoque completo →
+            </a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Material</th>
+                  <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide hidden sm:table-cell">Categoria</th>
+                  <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Qtd. (kg)</th>
+                  <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide hidden md:table-cell">Atualizado</th>
+                  <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Status</th>
+                </tr>
+              </thead>
+              <tbody id="stock-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

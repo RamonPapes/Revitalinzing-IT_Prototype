@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R-IT — Estoque</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 w-80 pointer-events-none"></div>
+
+  <div class="flex min-h-screen">
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col lg:ml-64">
+      <div id="header-container"></div>
+
+      <main class="flex-1 p-5 lg:p-7">
+
+        <div class="flex items-center justify-between mb-5">
+          <p class="text-sm text-slate-500">Controle os resíduos disponíveis em sua planta industrial.</p>
+          <button onclick="openModal('modal-stock')" class="btn-primary flex items-center gap-2">
+            <i class="fa-solid fa-plus text-xs"></i>Adicionar ao Estoque
+          </button>
+        </div>
+
+        <div class="card overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-100">
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Material</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide hidden sm:table-cell">Categoria</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Qtd. (kg)</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide hidden md:table-cell">Local (UF)</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide hidden md:table-cell">Atualizado</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Status</th>
+                <th class="text-left py-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="stock-body"></tbody>
+          </table>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar ao Estoque -->
+  <div id="modal-stock" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-bg bg-black/40">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+      <div class="flex items-center justify-between p-5 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800">Adicionar Item ao Estoque</h3>
+        <button onclick="closeModal('modal-stock')" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="form-stock" onsubmit="handleAddStock(event)" class="p-5">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="col-span-2">
+            <label class="form-label">Nome do Material *</label>
+            <input id="stock-name" type="text" placeholder="Ex: Aparas de Papel Branco" class="form-input" required />
+          </div>
+          <div>
+            <label class="form-label">Categoria *</label>
+            <select id="stock-cat" class="form-input" required>
+              <option value="">Selecione...</option>
+              <option>Papel / Papelão</option>
+              <option>Plástico</option>
+              <option>Metal / Sucata</option>
+              <option>Madeira</option>
+              <option>Óleo</option>
+              <option>Borracha</option>
+              <option>Têxtil</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Quantidade (kg) *</label>
+            <input id="stock-qty" type="number" placeholder="0" min="1" class="form-input" required />
+          </div>
+          <div>
+            <label class="form-label">Localização (UF) *</label>
+            <select id="stock-uf" class="form-input" required>
+              <option value="">Selecione...</option>
+              <option>SP</option><option>RJ</option><option>MG</option>
+              <option>RS</option><option>SC</option><option>PR</option>
+              <option>BA</option><option>GO</option><option>PE</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Condição</label>
+            <select id="stock-condition" class="form-input">
+              <option>Puro</option>
+              <option>Baixa contaminação</option>
+              <option>Requer triagem</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end">
+          <button type="button" onclick="closeModal('modal-stock')" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-plus mr-1.5"></i>Adicionar ao Estoque
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/stock.js"></script>
+</body>
+</html>
