@@ -67,10 +67,11 @@ const NAV_ITEMS = [
   { id: 'announcements', label: 'Meus Anúncios',       icon: 'fa-bullhorn',                href: 'announcements.html' },
   { id: 'demands',       label: 'Minhas Demandas',     icon: 'fa-magnifying-glass-dollar', href: 'demands.html'       },
   { id: 'stock',         label: 'Estoque',              icon: 'fa-boxes-stacked',           href: 'stock.html'         },
-  { id: 'trades',        label: 'Gestão de Trocas',    icon: 'fa-arrows-left-right',       href: 'trades.html'        },
-  { id: 'history',       label: 'Histórico de Trocas', icon: 'fa-clock-rotate-left',       href: 'history.html'       },
+  { id: 'buy',        label: 'Gestão de Compra/Venda',    icon: 'fa-arrows-left-right',       href: 'buy.html'        },
+  { id: 'trades',     label: 'Gestão de Trocas',          icon: 'fa-right-left',              href: 'trades.html'     },
+  { id: 'history',       label: 'Histórico de Vendas', icon: 'fa-clock-rotate-left',       href: 'history.html'       },
   { group: 'Relatórios' },
-  { id: 'esg', label: 'Relatório ESG', icon: 'fa-leaf', href: '#', onclick: "showToast('Relatório ESG em desenvolvimento.','info'); return false;" },
+  { id: 'esg', label: 'Relatório ESG', icon: 'fa-leaf', href: 'esg.html' },
 ];
 
 // ─── Layout builders ──────────────────────────────────

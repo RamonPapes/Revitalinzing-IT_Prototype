@@ -69,16 +69,14 @@
           <div>
             <p class="text-green-300 text-xs font-semibold uppercase tracking-widest mb-1">Score ESG</p>
             <h3 class="text-white text-xl font-bold">
-              Sua empresa atingiu nível <span class="text-green-300">A+</span> em sustentabilidade
+              Sua empresa atingiu nível <span class="text-green-300" id="dash-esg-grade">...</span> em sustentabilidade
             </h3>
-            <p class="text-slate-300 text-sm mt-1">Baseado nas trocas realizadas e CO₂ evitado neste trimestre.</p>
+            <p class="text-slate-300 text-sm mt-1">Pontuação: <span id="dash-esg-score">...</span>/100 — Baseado em vendas, trocas e CO₂ evitado.</p>
           </div>
-          <button
-            onclick="showToast('Exportação de relatório em desenvolvimento.','info')"
-            class="btn-outline text-green-300 border-green-400 hover:bg-white/10 flex-shrink-0 flex items-center gap-2"
-          >
-            <i class="fa-solid fa-file-arrow-down"></i>Exportar Relatório
-          </button>
+          <a href="./esg.html"
+            class="btn-outline text-green-300 border-green-400 hover:bg-white/10 flex-shrink-0 flex items-center gap-2 no-underline">
+            <i class="fa-solid fa-leaf"></i>Ver Relatório ESG
+          </a>
         </div>
 
         <!-- Tabela de movimentações de estoque -->

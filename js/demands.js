@@ -50,7 +50,7 @@ function renderDemands() {
           Encerrar
         </button>
         ${d.status === 'Com Match' ? `
-          <a href="./trades.html" class="btn-primary flex-1 text-center text-xs py-2 no-underline">
+          <a href="./buy.html" class="btn-primary flex-1 text-center text-xs py-2 no-underline">
             Ver Matches
           </a>` : ''}
       </div>

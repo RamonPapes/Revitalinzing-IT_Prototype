@@ -93,12 +93,114 @@ const INITIAL_DATA = {
     { id: 'TR-2023-031', material: 'Serragem de Madeira', partner: 'Movelaria Delta',      qty: 2000, value: '—',         co2: '1,2 tCO₂', status: 'Concluída' },
     { id: 'TR-2023-018', material: 'Óleo Vegetal',        partner: 'BioFuel Ltda.',        qty:  200, value: 'R$ 160',    co2: '0,3 tCO₂', status: 'Concluída' },
   ],
+
+  // ─── Gestão de Trocas (Barter) ────────────────────
+  barterReceived: [
+    {
+      id: 'BT-2024-001',
+      wantedMaterial:   'Aparas de Papel Branco',
+      wantedQty:        1000,
+      offeredMaterial:  'PET Pós-Consumo Moído',
+      offeredQty:       800,
+      proposer:         'Recicla Brasil Ltda.',
+      proposerCnpj:     '98.765.432/0001-10',
+      message:          'Temos PET de alta qualidade, pós-industrial, podemos negociar quantidade.',
+      status:           'Pendente',
+      match:            91,
+    },
+    {
+      id: 'BT-2024-002',
+      wantedMaterial:   'Resíduos PET Transparente',
+      wantedQty:        500,
+      offeredMaterial:  'Borracha Vulcanizada Triturada',
+      offeredQty:       600,
+      proposer:         'Pneus do Sul S.A.',
+      proposerCnpj:     '11.222.333/0001-44',
+      message:          '',
+      status:           'Pendente',
+      match:            84,
+    },
+  ],
+
+  barterSent: [
+    {
+      id: 'BT-2024-003',
+      wantedMaterial:   'Papelão Ondulado OCC',
+      wantedQty:        1500,
+      offeredMaterial:  'Aparas de Papel Branco',
+      offeredQty:       1200,
+      target:           'Pack Solutions',
+      status:           'Aguardando',
+    },
+  ],
+
+  barterActive: [
+    {
+      id: 'BT-2023-090',
+      myMaterial:    'Serragem de Madeira de Pinus',
+      myQty:         500,
+      theirMaterial: 'Resíduo de MDF',
+      theirQty:      400,
+      partner:       'Movelaria Delta',
+      co2:           0.7,
+      status:        'Aguardando coleta',
+    },
+  ],
+
+  // ─── Histórico de Trocas ──────────────────────────
+  barterHistory: [
+    {
+      id: 'BT-2023-071',
+      myMaterial:    'Óleo Vegetal Saturado',
+      myQty:         200,
+      theirMaterial: 'Óleo de Motor Usado',
+      theirQty:      180,
+      partner:       'AutoPark Ltda.',
+      co2:           '0,2 tCO₂',
+      concluded:     '15/04/2026',
+      status:        'Concluída',
+    },
+    {
+      id: 'BT-2023-055',
+      myMaterial:    'Aparas de Papel Branco',
+      myQty:         800,
+      theirMaterial: 'Papelão Ondulado OCC',
+      theirQty:      750,
+      partner:       'Pack Solutions',
+      co2:           '1,1 tCO₂',
+      concluded:     '02/04/2026',
+      status:        'Concluída',
+    },
+    {
+      id: 'BT-2023-039',
+      myMaterial:    'Resíduos PET Transparente',
+      myQty:         300,
+      theirMaterial: 'PET Pós-Consumo Moído',
+      theirQty:      250,
+      partner:       'Recicla Brasil Ltda.',
+      co2:           '0,3 tCO₂',
+      concluded:     '20/03/2026',
+      status:        'Cancelada',
+    },
+  ],
 };
 
 // ─── Persistência via localStorage ───────────────────
 function initDB() {
-  if (!localStorage.getItem('rit_db')) {
+  const stored = localStorage.getItem('rit_db');
+  if (!stored) {
     localStorage.setItem('rit_db', JSON.stringify(INITIAL_DATA));
+  } else {
+    // Migrate: add barter collections if missing
+    try {
+      const db = JSON.parse(stored);
+      let dirty = false;
+      if (!db.barterReceived) { db.barterReceived = INITIAL_DATA.barterReceived; dirty = true; }
+      if (!db.barterSent)     { db.barterSent     = INITIAL_DATA.barterSent;     dirty = true; }
+      if (!db.barterActive)   { db.barterActive   = INITIAL_DATA.barterActive;   dirty = true; }
+      if (!db.barterHistory)  { db.barterHistory  = INITIAL_DATA.barterHistory;  dirty = true; }
+      if (dirty) localStorage.setItem('rit_db', JSON.stringify(db));
+    } catch { localStorage.setItem('rit_db', JSON.stringify(INITIAL_DATA)); }
   }
 }
 

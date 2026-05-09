@@ -4,16 +4,16 @@ let currentItemId = null;
 
 // ─── Filtros e renderização ───────────────────────────
 function getFiltered() {
-  const db     = getDB();
+  const db = getDB();
   const search = (document.getElementById('mkt-search').value || '').toLowerCase();
-  const type   = (document.getElementById('mkt-type').value   || '').toLowerCase();
-  const state  = (document.getElementById('mkt-state').value  || '').toLowerCase();
-  const vol    = parseInt(document.getElementById('mkt-vol').value) || 0;
+  const type = (document.getElementById('mkt-type').value || '').toLowerCase();
+  const state = (document.getElementById('mkt-state').value || '').toLowerCase();
+  const vol = parseInt(document.getElementById('mkt-vol').value) || 0;
 
   return db.marketplace.filter(item =>
     (!search || item.name.toLowerCase().includes(search) || item.company.toLowerCase().includes(search)) &&
-    (!type   || item.category.toLowerCase().includes(type)) &&
-    (!state  || item.uf.toLowerCase() === state) &&
+    (!type || item.category.toLowerCase().includes(type)) &&
+    (!state || item.uf.toLowerCase() === state) &&
     (item.qty >= vol)
   );
 }
@@ -100,14 +100,29 @@ function setView(v) {
   document.getElementById('btn-list').className = `w-9 h-9 rounded-lg flex items-center justify-center ${v === 'list' ? 'bg-green-600 text-white' : 'bg-slate-100 text-slate-500'}`;
 }
 
-// ─── Modal de interesse ───────────────────────────────
+// ─── Modal de interesse e Troca ───────────────────────────────
+
+// Nova função: Exibe ou oculta a div de opções de troca
+function toggleTradeOptions() {
+  const isChecked = document.getElementById('offer-trade').checked;
+  const tradeDiv  = document.getElementById('trade-options');
+  const submitBtn = document.getElementById('btn-interest-submit');
+  if (isChecked) {
+    tradeDiv.classList.remove('hidden');
+    if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate mr-1.5"></i>Propor Troca';
+  } else {
+    tradeDiv.classList.add('hidden');
+    if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane mr-1.5"></i>Enviar Interesse';
+  }
+}
+
 function openInterestModal(id) {
-  const db   = getDB();
+  const db = getDB();
   const item = db.marketplace.find(i => i.id === id);
   if (!item) return;
   currentItemId = id;
 
-  document.getElementById('interest-title').textContent    = item.name;
+  document.getElementById('interest-title').textContent = item.name;
   document.getElementById('interest-subtitle').textContent = `${item.company} — ${item.uf}`;
   document.getElementById('interest-info').innerHTML = `
     <div class="flex items-center gap-3 mb-3">
@@ -125,31 +140,84 @@ function openInterestModal(id) {
       <span><b>Local:</b> ${item.uf}</span>
     </div>`;
 
+  // Reseta os campos padrões
   document.getElementById('interest-qty').value = '';
-  document.getElementById('interest-msg').value  = '';
+  document.getElementById('interest-msg').value = '';
+
+  // Reseta os campos de troca
+  document.getElementById('offer-trade').checked = false;
+  document.getElementById('trade-qty').value = '';
+  toggleTradeOptions(); // Garante que a div de troca fique oculta
+
+  // Preenche as opções de estoque para a troca
+  const tradeSelect = document.getElementById('trade-item');
+  const stockItems  = db.stock.filter(s => s.status === 'Disponível');
+
+  if (stockItems.length === 0) {
+    tradeSelect.innerHTML = '<option value="">Sem itens disponíveis no estoque</option>';
+    tradeSelect.disabled = true;
+  } else {
+    tradeSelect.disabled = false;
+    tradeSelect.innerHTML = '<option value="">Selecione um material...</option>' +
+      stockItems.map(s => `<option value="${s.id}">${s.name} — ${s.qty.toLocaleString('pt-BR')} kg disp.</option>`).join('');
+  }
 
   openModal('modal-interest');
 }
 
 function handleInterest() {
-  const db   = getDB();
+  const db = getDB();
   const item = db.marketplace.find(i => i.id === currentItemId);
-  const qty  = parseInt(document.getElementById('interest-qty').value);
+  const qty = parseInt(document.getElementById('interest-qty').value);
 
+  // Validação básica
   if (!qty || qty <= 0) { showToast('Informe uma quantidade válida.', 'error'); return; }
-  if (qty > item.qty)   { showToast(`Quantidade máxima disponível: ${item.qty.toLocaleString('pt-BR')} kg.`, 'error'); return; }
+  if (qty > item.qty) { showToast(`Quantidade máxima disponível: ${item.qty.toLocaleString('pt-BR')} kg.`, 'error'); return; }
 
-  db.tradesSent.unshift({
-    id:       `TR-${Date.now()}`,
-    material: item.name,
-    target:   item.company,
-    qty,
-    price:    item.price,
-    status:   'Aguardando',
-  });
-  saveDB(db);
-  closeModal('modal-interest');
-  showToast(`Interesse em "${item.name}" enviado com sucesso!`, 'success');
+  // Captura as opções de troca
+  const isTradeOffered = document.getElementById('offer-trade').checked;
+
+  if (isTradeOffered) {
+    // ── Proposta de TROCA → vai para barterSent / Gestão de Trocas ──
+    const tradeItemId = document.getElementById('trade-item').value;
+    const tradeQty    = parseInt(document.getElementById('trade-qty').value);
+
+    if (!tradeItemId) { showToast('Selecione um item do estoque para oferecer.', 'error'); return; }
+    if (!tradeQty || tradeQty <= 0) { showToast('Informe a quantidade a oferecer.', 'error'); return; }
+
+    const myItem = db.stock.find(s => s.id == tradeItemId);
+    if (myItem && tradeQty > myItem.qty) {
+      showToast(`Você só possui ${myItem.qty.toLocaleString('pt-BR')} kg de ${myItem.name} no estoque.`, 'error');
+      return;
+    }
+
+    if (!db.barterSent) db.barterSent = [];
+    db.barterSent.unshift({
+      id:              `BT-${Date.now()}`,
+      wantedMaterial:  item.name,
+      wantedQty:       qty,
+      offeredMaterial: myItem ? myItem.name : 'Desconhecido',
+      offeredQty:      tradeQty,
+      target:          item.company,
+      status:          'Aguardando',
+    });
+    saveDB(db);
+    closeModal('modal-interest');
+    showToast(`Proposta de troca por "${item.name}" enviada! Acompanhe em Gestão de Trocas.`, 'success');
+  } else {
+    // ── Proposta de COMPRA → vai para tradesSent / Gestão de Compra/Venda ──
+    db.tradesSent.unshift({
+      id:       `TR-${Date.now()}`,
+      material: item.name,
+      target:   item.company,
+      qty,
+      price:    item.price,
+      status:   'Aguardando',
+    });
+    saveDB(db);
+    closeModal('modal-interest');
+    showToast(`Interesse em "${item.name}" enviado com sucesso!`, 'success');
+  }
 }
 
 // ─── Init ─────────────────────────────────────────────
