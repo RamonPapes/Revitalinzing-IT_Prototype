@@ -286,7 +286,7 @@ function emptyState(icon, msg) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initLayout('Gestão de Vendas', 'trades');
+  initLayout('Gestão de Vendas', 'buy');
   renderAll();
   updateBadges();
 });
