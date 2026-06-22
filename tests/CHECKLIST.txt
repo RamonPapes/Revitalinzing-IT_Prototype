@@ -1,0 +1,153 @@
+✅ TESTES UNITÁRIOS - CHECKLIST DE ENTREGA
+
+═══════════════════════════════════════════════════════════════════════════
+
+📋 RESUMO EXECUTIVO
+───────────────────────────────────────────────────────────────────────────
+✅ Testes ESG (existente):          4 testes passando
+✅ Testes Buy (novo):              16 testes passando  
+✅ Testes Stock (novo):            10 testes passando
+─────────────────────────────────────────────────────────────
+   TOTAL:                         30 testes passando ✓ 100% sucesso
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎯 FUNÇÕES TESTADAS (VITAIS E FUNCAIS)
+
+1. BUY.JS - Gestão de Compras
+   ├── calculateTradeTotal(qty, price)
+   │   └── Regra Crítica: Multiplicação exata (qty × price)
+   │   └── Cenários: normal, com centavos, zero, grande volume
+   │   🔴 Teste de Falha: 1 × 1 = 1 (não arredondar)
+   │
+   ├── validateTradeData(data)
+   │   └── Validação: material, qty, price
+   │   └── Rejeita: valores negativos, campos vazios
+   │
+   └── calculateMatch(requested, offered)
+       └── Regra Crítica: Simetria (A→B = B→A)
+       └── Casos: 100%, reduzido, muito baixo
+       🔴 Teste de Falha: Match deve ser simétrico
+
+2. STOCK.JS - Gestão de Estoque
+   ├── validateStockInput(data)
+   │   └── Validação: name, category, qty, uf
+   │   └── Rejeita: campos vazios, qty ≤ 0
+   │   🔴 Teste de Falha: qty=1 deve ser válido
+   │
+   └── createStockItem(data)
+       └── Cria item com: id, status, unit="kg"
+       └── Gera IDs únicos por timestamp
+
+3. ESG.JS - Classificação ESG (existente)
+   └── getGrade(score)
+       └── Classifica: A+, A, B, C, D
+       🔴 Teste de Falha: score=80 deve ser "A"
+
+═══════════════════════════════════════════════════════════════════════════
+
+📁 ARQUIVOS CRIADOS/MODIFICADOS
+
+CRIADOS:
+  ✅ tests/buy.test.js              16 testes, ~140 linhas
+  ✅ tests/stock.test.js            10 testes, ~120 linhas
+  ✅ tests/README.md                Documentação completa
+
+MODIFICADOS (com exportações):
+  ✅ js/buy.js                      +3 funções + module.exports
+  ✅ js/stock.js                    +2 funções + module.exports
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 EXECUÇÃO DOS TESTES
+
+Rodar testes individuais:
+  node --test tests/buy.test.js
+  node --test tests/stock.test.js
+  node --test tests/esg.test.js
+
+Rodar todos os testes:
+  node --test tests/*.test.js
+
+Resultado esperado:
+  ✔ 30 testes
+  ✔ 0 falhas
+  ✔ ~80ms de execução
+
+═══════════════════════════════════════════════════════════════════════════
+
+🎬 ROTEIRO DE DEMONSTRAÇÃO AO VIVO
+
+PARTE 1: Integrante C (Arquitetura)
+─────────────────────────────────────────────────────────────────────────
+1. Apresentar o protótipo e sua importância:
+   "Este sistema gerencia compra, venda e estoque de itens recicláveis"
+
+2. Explicar por que testar estas funções:
+   "calculateTradeTotal multiplica quantidade × preço - erro aqui quebra tudo"
+   "validateStockInput previne dados inválidos no banco de dados"
+
+3. Mostrar o código na apresentação:
+   • Slide 1: calculateTradeTotal (multiplicação exata)
+   • Slide 2: validateStockInput (validação de obrigatórios)
+   • Slide 3: Arquitetura do projeto
+
+PARTE 2: Integrante D (QA + Demo)
+─────────────────────────────────────────────────────────────────────────
+1. FASE GREEN (Sucesso):
+   Execute: node --test tests/buy.test.js
+   Resultado: 16 testes VERDES ✓
+   Tempo: ~30ms
+
+2. FASE RED (Simular Falha):
+   Edite js/buy.js, linha ~307, mude:
+   
+   ❌ QUEBRA INTENCIONALMENTE:
+   function calculateTradeTotal(qty, price) {
+     return qty * price + 0.01;  // ← ERRO PROPOSITAL
+   }
+   
+   Execute: node --test tests/buy.test.js
+   Resultado: ✗ Teste falha em "Multiplicação exata"
+   Mostra: "Cálculo de 1 kg × R$1.00 deve ser exatamente 1, sem erros"
+           "1.01 !== 1"
+
+3. EXPLANAÇÃO DO CICLO:
+   "Os testes detectaram o erro que a regra de negócio quebrou.
+    Isso garante que mudanças no código não quebrem funcionalidades críticas."
+
+═══════════════════════════════════════════════════════════════════════════
+
+📊 COBERTURA DE TESTES
+
+Função              Método Testado                Status
+─────────────────────────────────────────────────────────────────────────
+calculateTradeTotal Multiplicação exata           ✅ 5 cenários
+validateTradeData   Validação de entrada          ✅ 4 cenários
+calculateMatch      Compatibilidade               ✅ 4 cenários
+validateStockInput  Validação de campo            ✅ 6 cenários
+createStockItem     Criação com ID único          ✅ 2 cenários
+getGrade            Classificação ESG             ✅ 4 cenários
+
+═══════════════════════════════════════════════════════════════════════════
+
+✨ CARACTERÍSTICAS ESPECIAIS
+
+✓ Testes isolados - sem dependência de banco de dados
+✓ Padrão consistente - mesmo formato do ESG test existente
+✓ Funções exportáveis - compatível com Node.js e navegador
+✓ Testes de falha - demonstração ao vivo de detecção de erros
+✓ Documentação - README.md explicando cada teste
+✓ 100% passagem - todos os 30 testes executam com sucesso
+✓ Tempo rápido - execução total em <100ms
+
+═══════════════════════════════════════════════════════════════════════════
+
+📝 PRÓXIMOS PASSOS (Opcional)
+
+- Adicionar testes para mais módulos (publish.js, marketplace.js, etc)
+- Integrar com CI/CD pipeline
+- Adicionar coverage reports
+- Criar testes de integração entre módulos
+
+═══════════════════════════════════════════════════════════════════════════

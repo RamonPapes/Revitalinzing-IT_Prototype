@@ -83,7 +83,61 @@ function handleAddStock(e) {
   showToast(`"${name}" adicionado ao estoque com sucesso!`, 'success');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initLayout('Estoque', 'stock');
-  renderStock();
-});
+// ─── Funções de Validação para Testes ────────────────
+/**
+ * Valida os dados de entrada para novo item de estoque
+ * @param {Object} data - Dados do item {name, category, qty, uf}
+ * @returns {Object} {isValid: boolean, error: string|null}
+ */
+function validateStockInput(data) {
+  if (!data.name || data.name.trim() === '') {
+    return { isValid: false, error: 'Nome do item é obrigatório' };
+  }
+  if (!data.category || data.category.trim() === '') {
+    return { isValid: false, error: 'Categoria é obrigatória' };
+  }
+  if (!data.qty || data.qty <= 0) {
+    return { isValid: false, error: 'Quantidade deve ser maior que 0' };
+  }
+  if (!data.uf || data.uf.trim() === '') {
+    return { isValid: false, error: 'UF é obrigatório' };
+  }
+  return { isValid: true, error: null };
+}
+
+/**
+ * Cria um novo item de estoque com dados validados
+ * @param {Object} data - Dados do item {name, category, qty, uf}
+ * @returns {Object} Objeto do item com id, status, etc
+ */
+function createStockItem(data) {
+  // Gera data no formato DD/MM/YYYY apenas se today() está disponível
+  let updatedDate = 'Hoje';
+  if (typeof today !== 'undefined') {
+    updatedDate = today();
+  }
+  
+  return {
+    id:       Date.now(),
+    name:     data.name,
+    category: data.category,
+    qty:      data.qty,
+    unit:     'kg',
+    location: data.uf,
+    updated:  updatedDate,
+    status:   'Disponível',
+  };
+}
+
+// Exportação para testes (Node.js)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { validateStockInput, createStockItem };
+}
+
+// Inicializar interface apenas no navegador
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayout('Estoque', 'stock');
+    renderStock();
+  });
+}

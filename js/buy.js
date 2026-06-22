@@ -285,8 +285,59 @@ function emptyState(icon, msg) {
   </div>`;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  initLayout('Gestão de Vendas', 'buy');
-  renderAll();
-  updateBadges();
-});
+// ─── Funções de Validação e Cálculo para Testes ───────
+/**
+ * Calcula o valor total de uma transação (quantidade × preço)
+ * @param {number} qty - Quantidade em kg
+ * @param {number} price - Preço unitário em R$
+ * @returns {number} Valor total da transação
+ */
+function calculateTradeTotal(qty, price) {
+  return qty * price;
+}
+
+/**
+ * Valida os dados de uma transação comercial
+ * @param {Object} data - Dados da transação {material, qty, price, proposer, proposerCnpj}
+ * @returns {Object} {isValid: boolean, error: string|null}
+ */
+function validateTradeData(data) {
+  if (!data.material || data.material.trim() === '') {
+    return { isValid: false, error: 'Material é obrigatório' };
+  }
+  if (data.qty < 0) {
+    return { isValid: false, error: 'Quantidade deve ser positiva' };
+  }
+  if (data.price < 0) {
+    return { isValid: false, error: 'Preço deve ser positivo' };
+  }
+  return { isValid: true, error: null };
+}
+
+/**
+ * Calcula o match (compatibilidade) percentual entre dois valores
+ * @param {number} requested - Valor solicitado
+ * @param {number} offered - Valor ofertado
+ * @returns {number} Percentual de match (0-100)
+ */
+function calculateMatch(requested, offered) {
+  if (requested === offered) return 100;
+  const diff = Math.abs(requested - offered);
+  const tolerance = Math.max(requested, offered);
+  const matchPercent = Math.max(0, Math.round(100 - (diff / tolerance) * 100));
+  return matchPercent;
+}
+
+// Exportação para testes (Node.js)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { calculateTradeTotal, validateTradeData, calculateMatch };
+}
+
+// Inicializar interface apenas no navegador
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    initLayout('Gestão de Vendas', 'buy');
+    renderAll();
+    updateBadges();
+  });
+}
