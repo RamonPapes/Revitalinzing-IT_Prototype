@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R-IT — Minhas Demandas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 w-80 pointer-events-none"></div>
+
+  <div class="flex min-h-screen">
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col lg:ml-64">
+      <div id="header-container"></div>
+
+      <main class="flex-1 p-5 lg:p-7">
+
+        <div class="flex items-center justify-between mb-5">
+          <p class="text-sm text-slate-500">Registre materiais que sua empresa necessita adquirir.</p>
+          <button onclick="openModal('modal-demand')" class="btn-primary flex items-center gap-2">
+            <i class="fa-solid fa-plus text-xs"></i>Registrar Demanda
+          </button>
+        </div>
+
+        <div id="demands-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Registrar Demanda -->
+  <div id="modal-demand" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-bg bg-black/40">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+      <div class="flex items-center justify-between p-5 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800">Registrar Nova Demanda</h3>
+        <button onclick="closeModal('modal-demand')" class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="form-demand" onsubmit="handleAddDemand(event)" class="p-5">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="col-span-2">
+            <label class="form-label">Material Buscado *</label>
+            <input id="demand-name" type="text" placeholder="Ex: Plástico PET reciclado" class="form-input" required />
+          </div>
+          <div>
+            <label class="form-label">Categoria *</label>
+            <select id="demand-cat" class="form-input" required>
+              <option value="">Selecione...</option>
+              <option>Papel / Papelão</option>
+              <option>Plástico</option>
+              <option>Metal / Sucata</option>
+              <option>Madeira</option>
+              <option>Óleo</option>
+              <option>Borracha</option>
+              <option>Têxtil</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Volume necessário (kg) *</label>
+            <input id="demand-qty" type="number" placeholder="0" min="1" class="form-input" required />
+          </div>
+          <div>
+            <label class="form-label">Urgência</label>
+            <select id="demand-urgency" class="form-input">
+              <option>Baixa</option>
+              <option selected>Média</option>
+              <option>Alta</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Estado preferencial</label>
+            <select id="demand-uf" class="form-input">
+              <option value="Indiferente">Indiferente</option>
+              <option>SP</option><option>RJ</option><option>MG</option>
+              <option>RS</option><option>SC</option><option>PR</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="form-label">Prazo de entrega</label>
+            <input type="date" class="form-input" />
+          </div>
+          <div class="col-span-2">
+            <label class="form-label">Observações técnicas</label>
+            <textarea class="form-input resize-none" rows="2"
+              placeholder="Pureza mínima, certificações exigidas, etc."></textarea>
+          </div>
+        </div>
+        <div class="flex gap-3 justify-end">
+          <button type="button" onclick="closeModal('modal-demand')" class="btn-secondary">Cancelar</button>
+          <button type="submit" class="btn-primary">
+            <i class="fa-solid fa-magnifying-glass-dollar mr-1.5"></i>Registrar Demanda
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/demands.js"></script>
+</body>
+</html>

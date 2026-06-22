@@ -1,0 +1,11 @@
+{
+  "name": "revitalinzing-it-prototype",
+  "version": "1.0.0",
+  "description": "Prototype UI and Tests",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

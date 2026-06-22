@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>R-IT — Gestão de Trocas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="../css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 w-80 pointer-events-none"></div>
+
+  <div class="flex min-h-screen">
+    <div id="sidebar-container"></div>
+
+    <div class="flex-1 flex flex-col lg:ml-64">
+      <div id="header-container"></div>
+
+      <main class="flex-1 p-5 lg:p-7">
+
+        <!-- Alerta de propostas recebidas -->
+        <div id="barter-alert" class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-5 flex items-start gap-3">
+          <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+            <i class="fa-solid fa-arrows-rotate text-blue-600 text-sm"></i>
+          </div>
+          <div>
+            <p class="font-semibold text-blue-800 text-sm">Você tem propostas de troca pendentes!</p>
+            <p class="text-blue-600 text-xs mt-0.5">
+              Revise as propostas recebidas e aceite ou recuse conforme sua disponibilidade de estoque.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-1 bg-slate-100 rounded-xl p-1 mb-5 w-fit flex-wrap">
+          <button id="tab-received" onclick="switchTab('received')"
+            class="px-4 py-2 rounded-lg text-sm font-semibold bg-white shadow text-slate-800 transition-all">
+            Propostas Recebidas
+            <span id="badge-received" class="ml-1.5 badge badge-red"></span>
+          </button>
+          <button id="tab-sent" onclick="switchTab('sent')"
+            class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 transition-all">
+            Propostas Enviadas
+          </button>
+          <button id="tab-active" onclick="switchTab('active')"
+            class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-500 transition-all">
+            Trocas Ativas
+            <span id="badge-active" class="ml-1.5 badge badge-blue"></span>
+          </button>
+        </div>
+
+        <div id="panel-received" class="space-y-4"></div>
+        <div id="panel-sent"     class="space-y-4 hidden"></div>
+        <div id="panel-active"   class="space-y-4 hidden"></div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Detalhes da Proposta de Troca -->
+  <div id="modal-barter" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 modal-bg bg-black/40">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg">
+      <div class="flex items-center justify-between p-5 border-b border-slate-100">
+        <h3 class="font-bold text-slate-800">Detalhes da Proposta de Troca</h3>
+        <button onclick="closeModal('modal-barter')"
+          class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="barter-detail-body" class="p-5 space-y-4 text-sm text-slate-600"></div>
+      <div id="barter-detail-actions" class="flex gap-3 justify-end px-5 pb-5"></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/shared.js"></script>
+  <script src="../js/trades.js"></script>
+</body>
+</html>
